@@ -50,11 +50,10 @@ function Register() {
 
     alert("You have registered")
   }
-
   return (
-    <div>
-      <h2>Register for Task Tracker</h2>
-      <form onSubmit={register}>
+    <div className="register-container">
+      <h2 className="register-title">Register for Task Tracker</h2>
+      <form onSubmit={register} className="register-form">
         <label htmlFor="name">Name:</label>
         <input
           type="text"
@@ -79,10 +78,12 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <br />
-        <button type="submit">Register</button>
+        <button type="submit" className="register-button">
+          Register
+        </button>
       </form>
     </div>
   );
-}
+};
 
 export default Register;
