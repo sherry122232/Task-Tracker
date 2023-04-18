@@ -16,6 +16,9 @@ function Tasks() {
   const [name, setName] = useState("No User");
   const [tasks, setTasks] = useState([]);
   const [taskName, setTaskName] = useState("");
+  const [taskText, setTaskText] = useState("");
+  const [taskDue, setTasDue] = useState("");
+  const [taskStatus, setTaskStatus] = useState("");
 
   //this should retireve names and tasks
   useEffect(() => {
@@ -30,7 +33,7 @@ function Tasks() {
         ))
   }, [])
 
-  const addToCurrent = () => {
+  const add = () => {
 
     db
       .collection("users")
@@ -38,10 +41,42 @@ function Tasks() {
       .collection("tasks")
       .doc(taskName)
       .set({
-        name: taskName
+        name: taskName,
+        due: taskDue,
+        text: taskText,
+        status: taskStatus
       });
 
       alert("Task was created!");
+  }
+
+  const edit = () => {
+
+    db
+      .collection("users")
+      .doc(user?.uid)
+      .collection("tasks")
+      .doc(taskName)
+      .update({
+        name: taskName,
+        due: taskDue,
+        text: taskText,
+        status: taskStatus
+      });
+
+      alert("Task was updated!");
+  }
+
+  const remove = () => {
+
+    db
+      .collection("users")
+      .doc(user?.uid)
+      .collection("tasks")
+      .doc(taskName)
+      .delete();
+
+      alert("Task was deleted!");
   }
 
   const Header = () => {
