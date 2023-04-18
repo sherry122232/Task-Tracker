@@ -50,8 +50,40 @@ function Register() {
 
     alert("You have registered")
   }
-
-  return <div>Register for Task Tracker</div>;
-}
+  return (
+    <div className="register-container">
+      <h2 className="register-title">Register for Task Tracker</h2>
+      <form onSubmit={register} className="register-form">
+        <label htmlFor="name">Name:</label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <br />
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <br />
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        <button type="submit" className="register-button">
+          Register
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default Register;
