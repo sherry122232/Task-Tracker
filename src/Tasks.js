@@ -1,6 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useStateValue } from './StateProvider';
+import { auth, db } from './firebase-setup/firebase';
 
 function Tasks() {
+
+  //for user auth purposes
+  const [{ user }, dispatch] = useStateValue();
+
+  const signOut = () => {
+    if (user) {
+        auth.signOut();
+    }
+  }
+
+  const [name, setName] = useState("No User");
+  const [tasks, setTasks] = useState([]);
+  const [taskName, setTaskName] = useState("");
+
+  //this should retireve names and tasks
+  useEffect(() => {
+    db.collection("user_names").doc(user.uid)
+        .onSnapshot(doc => setName(doc.data().name));
+    db.collection("users").doc(user.uid).collection("tasks")
+        .onSnapshot(snapshot => (
+            setTasks(snapshot.docs.map(doc => ({
+              name: doc.id,
+              data: doc.data()
+            })))
+        ))
+  }, [])
+
+  const addToCurrent = () => {
+
+    db
+      .collection("users")
+      .doc(user?.uid)
+      .collection("tasks")
+      .doc(taskName)
+      .set({
+        name: taskName
+      });
+
+      alert("Task was created!");
+  }
+
   const Header = () => {
     return (
       <div className="header">
