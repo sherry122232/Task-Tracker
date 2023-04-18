@@ -25,10 +25,14 @@ function Login() {
   
     auth   
         .signInWithEmailAndPassword(email, password)
-        .then(auth => {
-            history('/tasks');
+        .then((auth) => {
+          if (auth) {
+              history('/tasks');
+          }
         })
         .catch(error => alert(error.message))
+
+    alert("Signed in!")
   }
 
   return (
