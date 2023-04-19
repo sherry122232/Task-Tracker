@@ -62,9 +62,6 @@ function Login() {
         </button>
         <br />
         <button type="submit" className="login-button" style={{marginBottom: "4%"}}>Login</button>
-        <Link to='/register'>
-          <button type="submit" className="login-button">Register</button>
-        </Link>
       </form>
     </div>
   );

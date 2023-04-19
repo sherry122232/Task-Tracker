@@ -18,7 +18,7 @@ function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [taskName, setTaskName] = useState("");
   const [taskText, setTaskText] = useState("");
-  const [taskDue, setTasDue] = useState("");
+  const [taskDue, setTaskDue] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
 
   //this should retireve names and tasks
@@ -112,6 +112,7 @@ function Tasks() {
     <div className="main">
       <Header />
       <Tasks />
+      <button className="addbutton" onClick={add}>+</button> {/* add this line */}
     </div>
   );
 }
