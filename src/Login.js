@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { auth } from './firebase-setup/firebase';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function Login() {
 
@@ -61,6 +62,10 @@ function Login() {
         </button>
         <br />
         <button type="submit" className="login-button">Login</button>
+        Don't Have an Account?
+        <Link to='/register'>
+          <button type="submit" className="login-button">Register</button>
+        </Link>
       </form>
     </div>
   );
