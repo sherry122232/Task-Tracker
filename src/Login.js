@@ -57,12 +57,11 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="button" onClick={togglePasswordVisiblity} className="password-toggle">
+        <button type="button" className="password-toggle" onClick={togglePasswordVisiblity}>
           {passwordShown ? 'Hide' : 'Show'}
         </button>
         <br />
-        <button type="submit" className="login-button">Login</button>
-        Don't Have an Account?
+        <button type="submit" className="login-button" style={{marginBottom: "4%"}}>Login</button>
         <Link to='/register'>
           <button type="submit" className="login-button">Register</button>
         </Link>
