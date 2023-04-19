@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStateValue } from './StateProvider';
 import { auth, db } from './firebase-setup/firebase';
+import { Link } from "react-router-dom";
 
 function Tasks() {
 
@@ -84,7 +85,9 @@ function Tasks() {
       <div className="header">
         <h1 className="header__title">Task Tracker</h1>
         <h2 className="header__user">User</h2>
-        <button className="header__log-out">Log Out</button>
+        <Link to='/'>
+          <button className="header__log-out" onClick={signOut}>Log Out</button>
+        </Link>
       </div>
     );
   };
