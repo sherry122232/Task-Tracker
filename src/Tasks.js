@@ -94,19 +94,24 @@ function Tasks() {
   const Tasks = () => {
     return (
       <div className="tasks">
-        <h2 className="tasks__title">Tasks</h2>
+        {/* <h2 className="tasks__title">Tasks</h2> */}
         <ul className="tasks__list">
-          <li className="tasks__list-item">
-            <span className="tasks__task-name">Task</span>
-            <span>Status</span>
-            <span>Due</span>
-            <button>Edit</button>
-            <button>Delete</button>
-          </li>
+          {tasks.map((task) => (
+            <li className="tasks__list-item" key={task.name}>
+             <div className="task-box">
+              <span className="task-box__name">{task.data.name}</span>
+              <button className="task-box__status-btn" onClick={() => alert(task.data.status)}>Status</button>
+              <button className="task-box__due-btn" onClick={() => alert(task.data.due)}>Due</button>
+              <button className="task-box__edit-button">Edit</button>
+              <button className="task-box__delete-button">Delete</button>
+            </div>
+            </li>
+          ))}
         </ul>
       </div>
     );
   };
+  
 
   return (
     <div className="main">
