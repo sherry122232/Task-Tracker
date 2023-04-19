@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth, db } from './firebase-setup/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import './App.css';
 
 function Register() {
 
@@ -13,7 +14,12 @@ function Register() {
   const [password, setPassword] = useState('');
   //Let's ask for name as well
   const [name, setName] = useState('');
+  //for hiding password purposes
+  const [passwordShown, setPasswordShown] = useState(false);
 
+  const togglePasswordVisiblity = () => {
+      setPasswordShown(passwordShown ? false : true);
+  };
 
   //register button
   const register = e => {
@@ -73,16 +79,18 @@ function Register() {
         <br />
         <label htmlFor="password">Password:</label>
         <input
-          type="password"
+          type={passwordShown ? 'text' : 'password'}
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <br />
-        <button type="submit" className="register-button">
+        <button type="button" className="password-toggle"  onClick={togglePasswordVisiblity}>
+          {passwordShown ? 'Hide' : 'Show'}
+        </button>
+        <button type="submit" className="register-button" style={{marginBottom: "4%"}}>
           Register
         </button>
-        Already Have an Account?
         <Link to='/login'>
           <button type="submit" className="login-button">Login</button>
         </Link>
