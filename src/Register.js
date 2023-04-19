@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { auth, db } from './firebase-setup/firebase';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function Register() {
 
@@ -81,6 +82,10 @@ function Register() {
         <button type="submit" className="register-button">
           Register
         </button>
+        Already Have an Account?
+        <Link to='/login'>
+          <button type="submit" className="login-button">Login</button>
+        </Link>
       </form>
     </div>
   );
