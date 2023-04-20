@@ -1,119 +1,528 @@
 import React, { useState, useEffect } from "react";
-import { useStateValue } from './StateProvider';
-import { auth, db } from './firebase-setup/firebase';
+import { useStateValue } from "./StateProvider";
+import { auth, db, deleteDoc } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 
-function Tasks() {
-
+export default function Tasks() {
   //for user auth purposes
   const [{ user }, dispatch] = useStateValue();
-
-  const signOut = () => {
-    if (user) {
-        auth.signOut();
-    }
-  }
-
   const [name, setName] = useState("No User");
   const [tasks, setTasks] = useState([]);
-  const [taskName, setTaskName] = useState("");
-  const [taskText, setTaskText] = useState("");
-  const [taskDue, setTasDue] = useState("");
-  const [taskStatus, setTaskStatus] = useState("");
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [toggleAddTask, setToggleAddTask] = useState(false);
+  const [editTask, setEditTask] = useState(null);
 
-  //this should retireve names and tasks
+  // init filtered task for search functionality
   useEffect(() => {
-    db.collection("user_names").doc(user.uid)
-        .onSnapshot(doc => setName(doc.data().name));
-    db.collection("users").doc(user.uid).collection("tasks")
-        .onSnapshot(snapshot => (
-            setTasks(snapshot.docs.map(doc => ({
+    const results = tasks.filter((task) =>
+      task.data.name.toLowerCase().includes(searchPhrase.toLowerCase())
+    );
+    setFilteredTasks(results);
+  }, [searchPhrase, tasks]);
+  // user log out
+  const signOut = () => {
+    if (user) {
+      auth.signOut();
+    }
+  };
+
+  // //this should retrieve names and tasks
+  useEffect(() => {
+    if(user){
+      db.collection("user_names")
+        .doc(user.uid)
+        .onSnapshot((doc) => setName(doc.data().name));
+      db.collection("users")
+        .doc(user.uid)
+        .collection("tasks")
+        .onSnapshot((snapshot) =>
+          setTasks(
+            snapshot.docs.map((doc) => ({
               name: doc.id,
-              data: doc.data()
-            })))
-        ))
-  }, [])
-
-  const add = () => {
-
-    db
-      .collection("users")
-      .doc(user?.uid)
-      .collection("tasks")
-      .doc(taskName)
-      .set({
-        name: taskName,
-        due: taskDue,
-        text: taskText,
-        status: taskStatus
-      });
-
-      alert("Task was created!");
-  }
-
-  const edit = () => {
-
-    db
-      .collection("users")
-      .doc(user?.uid)
-      .collection("tasks")
-      .doc(taskName)
-      .update({
-        name: taskName,
-        due: taskDue,
-        text: taskText,
-        status: taskStatus
-      });
-
-      alert("Task was updated!");
-  }
-
-  const remove = () => {
-
-    db
-      .collection("users")
-      .doc(user?.uid)
-      .collection("tasks")
-      .doc(taskName)
-      .delete();
-
-      alert("Task was deleted!");
-  }
-
-  const Header = () => {
-    return (
-      <div className="header">
-        <h1 className="header__title">Task Tracker</h1>
-        <h2 className="header__user">User</h2>
-        <Link to='/'>
-          <button className="header__log-out" onClick={signOut}>Log Out</button>
-        </Link>
-      </div>
-    );
-  };
-  const Tasks = () => {
-    return (
-      <div className="tasks">
-        <h2 className="tasks__title">Tasks</h2>
-        <ul className="tasks__list">
-          <li className="tasks__list-item">
-            <span className="tasks__task-name">Task</span>
-            <span>Status</span>
-            <span>Due</span>
-            <button>Edit</button>
-            <button>Delete</button>
-          </li>
-        </ul>
-      </div>
-    );
-  };
+              data: doc.data(),
+            }))
+          )
+        );
+    }
+  }, [user]);
 
   return (
     <div className="main">
-      <Header />
-      <Tasks />
+      <Header name={name} signOut={signOut} />
+      <TasksLayout>
+        <TasksHeader
+          setFilteredTasks={setFilteredTasks}
+          searchPhrase={searchPhrase}
+          setSearchPhrase={setSearchPhrase}
+          setToggleAddTask={setToggleAddTask}
+        />
+        <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} />
+      </TasksLayout>
+      {/* logic allows add task form to be opened and closed */}
+      {toggleAddTask && (
+        <AddTaskForm
+          user={user}
+          tasks={tasks}
+          setTasks={setTasks}
+          setToggleAddTask={setToggleAddTask}
+        />
+      )}
+      {editTask && (
+        <EditTaskForm
+          user={user}
+          editTask={editTask}
+          setEditTask={setEditTask}
+        />
+      )}
     </div>
   );
 }
 
-export default Tasks;
+// ****** COMPONENTS ***** //
+
+// tasks page header
+function Header({ name, signOut }) {
+  return (
+    <div className="header">
+      <h1 className="header__title">Task Tracker</h1>
+      <h2 className="header__user">{name}</h2>
+      <Link to='/'>
+          <button className="header__log-out" onClick={signOut}>Log Out</button>
+        </Link>
+    </div>
+  );
+}
+// tasks section layout
+function TasksLayout({ children }) {
+  return (
+    <div className="tasks">
+      <h2 className="tasks__title">Tasks</h2>
+
+      {children}
+    </div>
+  );
+}
+// tasks section header with search, sort, and add task ui
+function TasksHeader({
+  setFilteredTasks,
+  searchPhrase,
+  setSearchPhrase,
+  setToggleAddTask,
+}) {
+  
+    // sorts tasks by name into filteredTasks
+  const sortName = () => {
+    setFilteredTasks((tasks) => {
+      let newTasks = [...tasks];
+      newTasks.sort((a, b) => {
+        const aLower = a.data.name.toLowerCase();
+        const bLower = b.data.name.toLowerCase();
+        if (aLower < bLower) {
+          return -1;
+        } else if (aLower > bLower) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      return newTasks;
+    });
+  };
+  // sorts tasks by status into filteredTasks
+  const sortStatus = () => {
+    setFilteredTasks((tasks) => {
+      let newTasks = [...tasks];
+      newTasks.sort((a, b) => {
+        const aLower = a.data.status.toLowerCase();
+        const bLower = b.data.status.toLowerCase();
+        if (aLower < bLower) {
+          return -1;
+        } else if (aLower > bLower) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      return newTasks;
+    });
+  };
+  // sorts tasks by due date into filteredTasks
+  const sortDue = () => {
+    setFilteredTasks((tasks) => {
+      let newTasks = [...tasks];
+      newTasks.sort((a, b) => {
+        const aLower = a.data.due.toLowerCase();
+        const bLower = b.data.due.toLowerCase();
+        if (aLower < bLower) {
+          return -1;
+        } else if (aLower > bLower) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      return newTasks;
+    });
+  };
+
+  return (
+    <div className="tasks__list-header">
+      <div className="tasks__search-group">
+        <label className="offscreen" htmlFor="search">
+          Search Tasks
+        </label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          key="search"
+          onChange={(e) => setSearchPhrase(e.target.value)}
+          value={searchPhrase}
+        ></input>
+      </div>
+      <br />
+      <div className="tasks__sort-group">
+        <button className="" type="button" onClick={() => sortName()}>
+          Name
+        </button>
+        <button className="" type="button" onClick={() => sortStatus()}>
+          Status
+        </button>
+        <button className="" type="button" onClick={() => sortDue()}>
+          Due
+        </button>
+      </div>
+      <button
+        className="tasks__new-btn"
+        type="button"
+        onClick={() => setToggleAddTask(true)}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+// task items content
+function TasksItems({ user, filteredTasks, setEditTask }) {
+  // handle edit task
+  const handleEdit = (taskName) => {
+    console.log({ taskName });
+    setEditTask(taskName);
+  };
+  // delete task from db
+  const remove = (task) => {
+    console.log(user.uid);
+    db.collection("users")
+      .doc(user.uid)
+      .collection("tasks")
+      .doc(task.name)
+      .delete();
+
+    alert("Task was deleted!");
+  };
+  // handle delete task from db
+  const handleDelete = (task) => {
+    console.log(`Delete task: ${task.name}`);
+    remove(task);
+  };
+  // reformats date from form
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString();
+  };
+  // Changes color based on status
+  const determineBackgroundColor = (status) => {
+    if (status == "in-progress") {
+      return "#fff099";
+    }
+    if (status == "to-do") {
+      return "#c2dbf7";
+    }
+    return "#9df0c0";
+  }
+  return (
+    <ul className="tasks__list">
+      {filteredTasks.map((task) => (
+        <li className="tasks__list-item" key={task.name} style={{backgroundColor: determineBackgroundColor(task.data.status)}}>
+          <div className="tasks__item-main">
+
+            <span className="tasks__task-name">{task.data.name}</span>
+            <span>
+              <button id={`task-${task.name}`} className="task-box__task-btn"
+          onMouseOver={() => document.getElementById(`task-${task.name}`).innerText = task.data.text}
+          onMouseOut={() => document.getElementById(`task-${task.name}`).innerText = 'Task'}>
+        Task
+        </button>
+              <button id={`status-${task.name}`} className="task-box__status-btn" 
+          onMouseOver={() => document.getElementById(`status-${task.name}`).innerText = task.data.status}
+          onMouseOut={() => document.getElementById(`status-${task.name}`).innerText = 'Status'}>
+        Status
+        </button>
+           <button id={`due-${task.name}`} className="task-box__due-btn"
+          onMouseOver={() => document.getElementById(`due-${task.name}`).innerText = task.data.due}
+          onMouseOut={() => document.getElementById(`due-${task.name}`).innerText = 'Due'}>
+        Due
+        </button>
+            <button className="task-box__edit-button"
+              type="button"
+              key={task.name}
+              onClick={() => handleEdit(task)}
+            >
+              Edit
+            </button>
+            <button className="task-box__delete-button" type="button" onClick={() => handleDelete(task)}>
+              Delete
+            </button>
+         </span>
+        </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// pop out form to add new task
+function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
+  console.log(`User.uid ${user.uid}`);
+  // init new task state
+  const [newTask, setNewTask] = useState({
+    name: "",
+    due: "",
+    description: "",
+    status: "to-do",
+  });
+  // handle update of form input
+  const handleChange = (e) => {
+    const { name, value } = e.currentTarget;
+    setNewTask({
+      ...newTask,
+      [name]: value,
+    });
+  };
+
+  // append new task to db
+  const add = (task) => {
+    console.log(`Add user: ${user}`);
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("tasks")
+      .doc(task.name)
+      .set({
+        name: task.name,
+        due: task.due,
+        text: task.description,
+        status: task.status,
+      });
+
+    alert("Task was created!");
+  };
+  // appends new task to tasks
+  const handleSubmitTask = (e) => {
+    e.preventDefault();
+    add(newTask);
+    // closes new task form
+    setToggleAddTask(false);
+  };
+
+  return (
+    <div className="form__container">
+      
+      <form
+        className="form"
+        id="add-task"
+        onSubmit={(e) => handleSubmitTask(e)}
+      >
+        <h2 className="form__title">New Task</h2>
+        
+        <label htmlFor="name">Task</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          onChange={(e) => handleChange(e)}
+          value={newTask.name}
+          required
+        ></input>
+        <label htmlFor="due">Due Date</label>
+        <input
+          type="date"
+          id="for"
+          name="due"
+          onChange={(e) => handleChange(e)}
+          value={newTask.due}
+          required
+        ></input>
+        <label htmlFor="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          onChange={(e) => handleChange(e)}
+          value={newTask.description}
+        ></textarea>
+        <div className="form__radio-group">
+          <div>
+            <input
+              type="radio"
+              id="to-do"
+              name="status"
+              value="to-do"
+              checked={newTask.status === "to-do"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="to-do">To-do</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="in-progress"
+              name="status"
+              value="in-progress"
+              checked={newTask.status === "in-progress"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="in-progress">In Progress</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="complete"
+              name="status"
+              value="complete"
+              checked={newTask.status === "complete"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="complete">Complete</label>
+          </div>
+        </div>
+        <button className="form__close-btn" type="submit" form="add-task">
+          Add
+        </button>
+        <button
+        className="form__close-btn"
+        type="button"
+        onClick={() => setToggleAddTask(false)}
+      >
+        Close
+      </button>
+      </form>
+    </div>
+  );
+}
+
+function EditTaskForm({ user, editTask, setEditTask }) {
+  const [updatedTask, setUpdatedTask] = useState(editTask);
+  // handle update of form input
+  const handleChange = (e) => {
+    const { name, value } = e.currentTarget;
+    setUpdatedTask({
+      ...updatedTask,
+      data: { ...updatedTask.data, [name]: value },
+    });
+  };
+  // reformats date from form
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString();
+  };
+  // update task data on db
+  const edit = (task) => {
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("tasks")
+      .doc(task.name)
+      .update({
+        name: task.data.name,
+        due: formatDate(task.data.due),
+        text: task.data.text,
+        status: task.data.status,
+      });
+
+    alert("Task was updated!");
+  };
+  // handle update task
+  const handleSubmitEdit = (e) => {
+    e.preventDefault();
+    edit(updatedTask);
+    // closes edit task form
+    setEditTask(null);
+  };
+
+  return (
+    <div className="form__container">
+     
+      <form
+        className="form"
+        id="edit-task"
+        onSubmit={(e) => handleSubmitEdit(e)}
+      >
+        <h2 className="form__title">Edit Task</h2>
+        <label htmlFor="name">Task</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          onChange={(e) => handleChange(e)}
+          value={updatedTask.data.name}
+          required
+        ></input>
+        <label htmlFor="due">Due Date</label>
+        <input
+          type="date"
+          id="for"
+          name="due"
+          onChange={(e) => handleChange(e)}
+          value={updatedTask.data.due}
+          required
+        ></input>
+        <label htmlFor="text">Description</label>
+        <textarea
+          id="text"
+          name="text"
+          onChange={(e) => handleChange(e)}
+          value={updatedTask.data.text}
+        ></textarea>
+        <div className="form__radio-group">
+          <div>
+            <input
+              type="radio"
+              id="to-do"
+              name="status"
+              value="to-do"
+              checked={updatedTask.data.status === "to-do"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="to-do">To-do</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="in-progress"
+              name="status"
+              value="in-progress"
+              checked={updatedTask.data.status === "in-progress"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="in-progress">In Progress</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="complete"
+              name="status"
+              value="complete"
+              checked={updatedTask.data.status === "complete"}
+              onChange={(e) => handleChange(e)}
+            ></input>
+            <label htmlFor="complete">Complete</label>
+          </div>
+        </div>
+        <button className="form__close-btn" type="button" onClick={() => setEditTask(null)}>
+        Cancel
+      </button>
+        <button className="form__close-btn" type="submit" form="edit-task">
+          Save Edit
+        </button>
+      </form>
+    </div>
+  );
+}
