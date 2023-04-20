@@ -247,20 +247,10 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
-  // Changes color based on status
-  const determineBackgroundColor = (status) => {
-    if (status === "in-progress") {
-      return "#fff099";
-    }
-    if (status === "to-do") {
-      return "#c2dbf7";
-    }
-    return "#9df0c0";
-  }
   return (
     <ul className="tasks__list">
       {filteredTasks.map((task) => (
-        <li className="tasks__list-item" key={task.name} style={{backgroundColor: determineBackgroundColor(task.data.status)}}>
+        <li className="tasks__list-item" key={task.name}>
           <div className="tasks__item-main">
             <span className="tasks__task-name">{task.data.name}</span>
             <p className="tasks__task-description">{task.data.text}</p>
@@ -447,7 +437,7 @@ function EditTaskForm({ user, editTask, setEditTask }) {
       .doc(task.name)
       .update({
         name: task.data.name,
-        due: formatDate(task.data.due),
+        due: task.data.due,
         text: task.data.text,
         status: task.data.status,
       });
@@ -531,8 +521,8 @@ function EditTaskForm({ user, editTask, setEditTask }) {
           </div>
         </div>
         <div className="form__btn-group">
-          <button className="form__add-btn" type="submit" form="add-task">
-            Edit
+          <button className="form__add-btn" type="submit" form="edit-task">
+            Add
           </button>
           <button
             className="form__close-btn"
