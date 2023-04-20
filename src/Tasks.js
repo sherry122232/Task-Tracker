@@ -12,6 +12,7 @@ export default function Tasks() {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [toggleAddTask, setToggleAddTask] = useState(false);
   const [editTask, setEditTask] = useState(null);
+
   // init filtered task for search functionality
   useEffect(() => {
     const results = tasks.filter((task) =>
@@ -28,21 +29,23 @@ export default function Tasks() {
 
   // //this should retrieve names and tasks
   useEffect(() => {
-    db.collection("user_names")
-      .doc(user.uid)
-      .onSnapshot((doc) => setName(doc.data().name));
-    db.collection("users")
-      .doc(user.uid)
-      .collection("tasks")
-      .onSnapshot((snapshot) =>
-        setTasks(
-          snapshot.docs.map((doc) => ({
-            name: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-  }, []);
+    if(user){
+      db.collection("user_names")
+        .doc(user.uid)
+        .onSnapshot((doc) => setName(doc.data().name));
+      db.collection("users")
+        .doc(user.uid)
+        .collection("tasks")
+        .onSnapshot((snapshot) =>
+          setTasks(
+            snapshot.docs.map((doc) => ({
+              name: doc.id,
+              data: doc.data(),
+            }))
+          )
+        );
+    }
+  }, [user]);
 
   return (
     <div className="main">
