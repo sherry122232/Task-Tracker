@@ -1,50 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600&display=swap");
+
+/* VARIABLES */
+:root {
+  --main: #004e98;
+  --main-accent: #3a6ea5;
+  --light: #ebebeb;
+  --light-accent: #c0c0c0;
+  --accent: #ff6700;
+}
+
 .main {
   height: 100dvh;
   max-width: 100vh;
   margin: auto;
-  background-color: aqua;
+  background-color: var(--light);
+  font-family: "Montserrat";
+}
+
+/* UTILITY */
+.offscreen {
+  position: absolute;
+  top: -10000px;
+}
+
+.icon-btn {
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  padding: 15px;
+  border: none;
+  background-color: var(--light);
+}
+
+.icon-btn:hover {
+  cursor: pointer;
+  background-color: var(--light-accent);
 }
 
 /* HEADER */
 .header {
-  background-color: blue;
-  padding: 1rem;
+  background-color: var(--main);
+  color: white;
+  padding: 2em;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  height: 10vh;
+  height: 15vh;
+  border-radius: 0 0 20px 20px;
 }
 
-.header__title {
-  flex-grow: 1;
+.header__logout-btn {
+  background-color: var(--light);
+  padding: 1em;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.header__logout-btn:hover {
+  background-color: var(--light-accent);
+  cursor: pointer;
 }
 
 /* TASKS */
 .tasks {
-  background-color: white;
-  margin: 1rem;
-  padding: 2rem;
+  padding: 1em 2em;
 }
 
-.tasks__list-item {
+/* .tasks__list-item {
+  padding: 1rem;
+  border-radius: 16px;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: white;
+} */
+
+.tasks__list-header {
+  padding: 1em;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.tasks__search {
+  width: 12rem;
+  border: none;
+  border-radius: 10px;
+  box-shadow: none;
+  margin: 1em;
+  padding: 0.5em;
+  background-color: white;
+}
+
+.tasks__sort-group {
+  display: flex;
+  justify-content: center;
   gap: 1rem;
 }
 
-.tasks__task-name {
-  flex-grow: 1;
+.tasks__sort-btn {
+  border: none;
+  border-radius: 10px;
+  background-color: white;
+  padding: 10px;
+}
+
+.tasks__sort-btn:hover {
+  cursor: pointer;
+  background-color: var(--light-accent);
+}
+
+.tasks__new-btn-wrapper {
+  text-align: right;
+}
+.tasks__new-btn {
+  background-color: var(--main);
+  color: white;
+}
+
+.tasks__new-btn:hover {
+  cursor: pointer;
+  background-color: var(--main-accent);
 }
 
 .tasks__list-item {
   margin-left: auto;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   position: relative;
+  background-color: white;
+}
+
+.tasks__item-main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 1em;
+  padding: 1em;
+}
+
+.tasks__item-name {
+  flex-grow: 1;
+}
+
+.tasks__item-btn-group {
+  display: flex;
+  gap: 1em;
 }
 
 .form__container {
@@ -71,7 +177,7 @@
 }
 
 .form label {
-  display: block;
+  /* display: block; */
   margin-bottom: 5px;
 }
 
@@ -86,60 +192,48 @@
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
-.task-box__task-btn {
-  position: absolute;
-  right: 240px;
+.form__radio-group {
+  width: max-content;
+  margin: auto;
+  text-align: left;
+}
+.form__radio-label {
+  display: inline;
 }
 
-.task-box__status-btn {
-  position: absolute;
-  right: 170px;
+.form__btn-group {
+  padding-top: 1em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
 }
 
-.task-box__due-btn {
-  position: absolute;
-  right: 120px;
+.form button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5em;
+  width: 6rem;
 }
 
-.task-box__edit-button {
-  position: absolute;
-  right: 70px;
-}
-
-.task-box__delete-button {
-  position: absolute;
-  right: 5px;
-}
-
-
-
-
-.tasks__new-btn {
-  display: block;
-  margin: 0 auto;
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  border-radius: 0;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: #00bfff;
+.form__add-btn {
+  background-color: var(--main);
   color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  outline: none;
-  transform: translateY(-50%);
 }
 
-
-
-.addbutton:hover {
+.form__add-btn:hover {
   cursor: pointer;
+  background-color: var(--main-accent);
 }
 
+.form__close-btn {
+  background-color: var(--light);
+  color: black;
+}
 
+.form__close-btn:hover {
+  cursor: pointer;
+  background-color: var(--light-accent);
+}
 
 /* Login */
 .login-container {
@@ -153,9 +247,7 @@
   align-items: center;
   justify-content: center;
   height: 50vh;
-  
-  
-  
+
   position: absolute;
   top: 50%;
   left: 50%;
@@ -202,7 +294,6 @@
   cursor: pointer;
 }
 
-
 /* Register */
 .register-container {
   max-width: 500px;
@@ -237,7 +328,6 @@
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
-  
 }
 
 .register-button {
