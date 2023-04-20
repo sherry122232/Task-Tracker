@@ -77,9 +77,8 @@
 .tasks__list-header {
   padding: 1em;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 10em;
 }
 
 .tasks__search {
@@ -105,12 +104,22 @@
   padding: 10px;
 }
 
+.tasks__sort-btn:hover {
+  cursor: pointer;
+  background-color: var(--light-accent);
+}
+
 .tasks__new-btn-wrapper {
   text-align: right;
 }
 .tasks__new-btn {
   background-color: var(--main);
   color: white;
+}
+
+.tasks__new-btn:hover {
+  cursor: pointer;
+  background-color: var(--main-accent);
 }
 
 .tasks__list-item {
@@ -168,7 +177,7 @@
 }
 
 .form label {
-  display: block;
+  /* display: block; */
   margin-bottom: 5px;
 }
 
@@ -181,6 +190,49 @@
   border-radius: 5px;
   border: none;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form__radio-group {
+  width: max-content;
+  margin: auto;
+  text-align: left;
+}
+.form__radio-label {
+  display: inline;
+}
+
+.form__btn-group {
+  padding-top: 1em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.form button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5em;
+  width: 6rem;
+}
+
+.form__add-btn {
+  background-color: var(--main);
+  color: white;
+}
+
+.form__add-btn:hover {
+  cursor: pointer;
+  background-color: var(--main-accent);
+}
+
+.form__close-btn {
+  background-color: var(--light);
+  color: black;
+}
+
+.form__close-btn:hover {
+  cursor: pointer;
+  background-color: var(--light-accent);
 }
 
 /* Login */

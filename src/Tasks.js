@@ -367,7 +367,9 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "to-do"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="to-do">To-do</label>
+            <label className="form__radio-label" htmlFor="to-do">
+              To-do
+            </label>
           </div>
           <div>
             <input
@@ -378,7 +380,9 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "in-progress"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="in-progress">In Progress</label>
+            <label className="form__radio-label" htmlFor="in-progress">
+              In Progress
+            </label>
           </div>
           <div>
             <input
@@ -389,19 +393,23 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "complete"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="complete">Complete</label>
+            <label className="form__radio-label" htmlFor="complete">
+              Complete
+            </label>
           </div>
         </div>
-        <button className="form__close-btn" type="submit" form="add-task">
-          Add
-        </button>
-        <button
-          className="form__close-btn"
-          type="button"
-          onClick={() => setToggleAddTask(false)}
-        >
-          Close
-        </button>
+        <div className="form__btn-group">
+          <button className="form__add-btn" type="submit" form="add-task">
+            Add
+          </button>
+          <button
+            className="form__close-btn"
+            type="button"
+            onClick={() => setToggleAddTask(false)}
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
@@ -512,16 +520,18 @@ function EditTaskForm({ user, editTask, setEditTask }) {
             <label htmlFor="complete">Complete</label>
           </div>
         </div>
-        <button
-          className="form__close-btn"
-          type="button"
-          onClick={() => setEditTask(null)}
-        >
-          Cancel
-        </button>
-        <button className="form__close-btn" type="submit" form="edit-task">
-          Save Edit
-        </button>
+        <div className="form__btn-group">
+          <button className="form__add-btn" type="submit" form="add-task">
+            Edit
+          </button>
+          <button
+            className="form__close-btn"
+            type="button"
+            onClick={() => setEditTask(null)}
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
