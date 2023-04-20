@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useStateValue } from "./StateProvider";
-import { auth, db, deleteDoc } from "./firebase-setup/firebase";
+import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 
 export default function Tasks() {
@@ -12,7 +12,6 @@ export default function Tasks() {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [toggleAddTask, setToggleAddTask] = useState(false);
   const [editTask, setEditTask] = useState(null);
-
   // init filtered task for search functionality
   useEffect(() => {
     const results = tasks.filter((task) =>
@@ -29,23 +28,21 @@ export default function Tasks() {
 
   // //this should retrieve names and tasks
   useEffect(() => {
-    if(user){
-      db.collection("user_names")
-        .doc(user.uid)
-        .onSnapshot((doc) => setName(doc.data().name));
-      db.collection("users")
-        .doc(user.uid)
-        .collection("tasks")
-        .onSnapshot((snapshot) =>
-          setTasks(
-            snapshot.docs.map((doc) => ({
-              name: doc.id,
-              data: doc.data(),
-            }))
-          )
-        );
-    }
-  }, [user]);
+    db.collection("user_names")
+      .doc(user.uid)
+      .onSnapshot((doc) => setName(doc.data().name));
+    db.collection("users")
+      .doc(user.uid)
+      .collection("tasks")
+      .onSnapshot((snapshot) =>
+        setTasks(
+          snapshot.docs.map((doc) => ({
+            name: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
+  }, []);
 
   return (
     <div className="main">
@@ -58,7 +55,6 @@ export default function Tasks() {
           setToggleAddTask={setToggleAddTask}
         />
         <TasksItems filteredTasks={filteredTasks} setEditTask={setEditTask} setFilteredTasks={setFilteredTasks}/>
-        {/* <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} /> */}
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
@@ -184,6 +180,8 @@ function TasksHeader({
 }
 
 
+
+
 // task items content
 function TasksItems({ user, filteredTasks, setEditTask,setFilteredTasks }) {
   // handle edit task
@@ -193,9 +191,9 @@ function TasksItems({ user, filteredTasks, setEditTask,setFilteredTasks }) {
   };
   // delete task from db
   const remove = (task) => {
-    console.log(user.uid);
+    console.log(task);
     db.collection("users")
-      .doc(user.uid)
+      .doc(user?.uid)
       .collection("tasks")
       .doc(task.name)
       .delete();
