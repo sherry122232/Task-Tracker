@@ -522,7 +522,7 @@ function EditTaskForm({ user, editTask, setEditTask }) {
         </div>
         <div className="form__btn-group">
           <button className="form__add-btn" type="submit" form="edit-task">
-            Add
+            Save
           </button>
           <button
             className="form__close-btn"
