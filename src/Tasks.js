@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useStateValue } from "./StateProvider";
 import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
-
 // import icons
 import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
 
@@ -59,7 +58,7 @@ export default function Tasks() {
           setSearchPhrase={setSearchPhrase}
           setToggleAddTask={setToggleAddTask}
         />
-        <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} />
+        <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} setFilteredTasks={setFilteredTasks} />
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
