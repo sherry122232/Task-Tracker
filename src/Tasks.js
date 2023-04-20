@@ -4,7 +4,7 @@ import { auth, db, deleteDoc } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 
 // import icons
-import { FaTrashAlt, FaEdit, FaPlus } from "react-icons/fa";
+import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
 
 export default function Tasks() {
   //for user auth purposes
@@ -94,7 +94,7 @@ function Header({ name, signOut }) {
     <div className="header">
       <h1 className="header__title">{name}'s Task Tracker</h1>
       <Link to="/">
-        <button className="header__log-out" onClick={signOut}>
+        <button className="header__logout-btn" onClick={signOut}>
           Log Out
         </button>
       </Link>
@@ -172,10 +172,8 @@ function TasksHeader({
   return (
     <div className="tasks__list-header">
       <div className="tasks__search-group">
-        <label className="offscreen" htmlFor="search">
-          Search Tasks
-        </label>
         <input
+          className="tasks__search"
           type="text"
           id="search"
           name="search"
@@ -183,26 +181,42 @@ function TasksHeader({
           onChange={(e) => setSearchPhrase(e.target.value)}
           value={searchPhrase}
         ></input>
+        <label className="" htmlFor="search">
+          <FaSearch />
+        </label>
       </div>
       <div className="tasks__sort-group">
-        <button className="" type="button" onClick={() => sortName()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortName()}
+        >
           Name
         </button>
-        <button className="" type="button" onClick={() => sortStatus()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortStatus()}
+        >
           Status
         </button>
-        <button className="" type="button" onClick={() => sortDue()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortDue()}
+        >
           Due
         </button>
       </div>
-
-      <button
-        className="icon-btn tasks__new-btn"
-        type="button"
-        onClick={() => setToggleAddTask(true)}
-      >
-        <FaPlus />
-      </button>
+      <div className="tasks__new-btn-wrapper">
+        <button
+          className="icon-btn tasks__new-btn"
+          type="button"
+          onClick={() => setToggleAddTask(true)}
+        >
+          <FaPlus />
+        </button>
+      </div>
     </div>
   );
 }
@@ -245,7 +259,7 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
           <span>{formatDate(task.data.due)}</span>
           <div className="tasks__item-btn-group">
             <button
-              className="icon-button"
+              className="icon-btn"
               type="button"
               key={task.name}
               onClick={() => handleEdit(task)}
@@ -253,7 +267,7 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
               <FaEdit />
             </button>
             <button
-              className="icon-button"
+              className="icon-btn"
               type="button"
               onClick={() => handleDelete(task)}
             >
