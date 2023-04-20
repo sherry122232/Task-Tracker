@@ -3,6 +3,9 @@ import { useStateValue } from "./StateProvider";
 import { auth, db, deleteDoc } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 
+// import icons
+import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
+
 export default function Tasks() {
   //for user auth purposes
   const [{ user }, dispatch] = useStateValue();
@@ -29,7 +32,7 @@ export default function Tasks() {
 
   // //this should retrieve names and tasks
   useEffect(() => {
-    if(user){
+    if (user) {
       db.collection("user_names")
         .doc(user.uid)
         .onSnapshot((doc) => setName(doc.data().name));
@@ -57,7 +60,11 @@ export default function Tasks() {
           setSearchPhrase={setSearchPhrase}
           setToggleAddTask={setToggleAddTask}
         />
-        <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} />
+        <TasksItems
+          user={user}
+          filteredTasks={filteredTasks}
+          setEditTask={setEditTask}
+        />
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
@@ -85,24 +92,21 @@ export default function Tasks() {
 function Header({ name, signOut }) {
   return (
     <div className="header">
-      <h1 className="header__title">Task Tracker</h1>
-      <h2 className="header__user">{name}</h2>
-      <Link to='/'>
-          <button className="header__log-out" onClick={signOut}>Log Out</button>
-        </Link>
+      <h1 className="header__title">{name}'s Task Tracker</h1>
+      <Link to="/">
+        <button className="header__logout-btn" onClick={signOut}>
+          Log Out
+        </button>
+      </Link>
     </div>
   );
 }
+
 // tasks section layout
 function TasksLayout({ children }) {
-  return (
-    <div className="tasks">
-      <h2 className="tasks__title">Tasks</h2>
-
-      {children}
-    </div>
-  );
+  return <div className="tasks">{children}</div>;
 }
+
 // tasks section header with search, sort, and add task ui
 function TasksHeader({
   setFilteredTasks,
@@ -110,8 +114,7 @@ function TasksHeader({
   setSearchPhrase,
   setToggleAddTask,
 }) {
-  
-    // sorts tasks by name into filteredTasks
+  // sorts tasks by name into filteredTasks
   const sortName = () => {
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
@@ -169,10 +172,8 @@ function TasksHeader({
   return (
     <div className="tasks__list-header">
       <div className="tasks__search-group">
-        <label className="offscreen" htmlFor="search">
-          Search Tasks
-        </label>
         <input
+          className="tasks__search"
           type="text"
           id="search"
           name="search"
@@ -180,26 +181,42 @@ function TasksHeader({
           onChange={(e) => setSearchPhrase(e.target.value)}
           value={searchPhrase}
         ></input>
+        <label className="" htmlFor="search">
+          <FaSearch />
+        </label>
       </div>
-      <br />
       <div className="tasks__sort-group">
-        <button className="" type="button" onClick={() => sortName()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortName()}
+        >
           Name
         </button>
-        <button className="" type="button" onClick={() => sortStatus()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortStatus()}
+        >
           Status
         </button>
-        <button className="" type="button" onClick={() => sortDue()}>
+        <button
+          className="tasks__sort-btn"
+          type="button"
+          onClick={() => sortDue()}
+        >
           Due
         </button>
       </div>
-      <button
-        className="tasks__new-btn"
-        type="button"
-        onClick={() => setToggleAddTask(true)}
-      >
-        +
-      </button>
+      <div className="tasks__new-btn-wrapper">
+        <button
+          className="icon-btn tasks__new-btn"
+          type="button"
+          onClick={() => setToggleAddTask(true)}
+        >
+          <FaPlus />
+        </button>
+      </div>
     </div>
   );
 }
@@ -224,19 +241,18 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   };
   // handle delete task from db
   const handleDelete = (task) => {
-    console.log(`Delete task: ${task.name}`);
     remove(task);
   };
-  // reformats date from form
+  // reformats date from data
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
   // Changes color based on status
   const determineBackgroundColor = (status) => {
-    if (status == "in-progress") {
+    if (status === "in-progress") {
       return "#fff099";
     }
-    if (status == "to-do") {
+    if (status === "to-do") {
       return "#c2dbf7";
     }
     return "#9df0c0";
@@ -246,36 +262,28 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
       {filteredTasks.map((task) => (
         <li className="tasks__list-item" key={task.name} style={{backgroundColor: determineBackgroundColor(task.data.status)}}>
           <div className="tasks__item-main">
-
             <span className="tasks__task-name">{task.data.name}</span>
-            <span>
-              <button id={`task-${task.name}`} className="task-box__task-btn"
-          onMouseOver={() => document.getElementById(`task-${task.name}`).innerText = task.data.text}
-          onMouseOut={() => document.getElementById(`task-${task.name}`).innerText = 'Task'}>
-        Task
-        </button>
-              <button id={`status-${task.name}`} className="task-box__status-btn" 
-          onMouseOver={() => document.getElementById(`status-${task.name}`).innerText = task.data.status}
-          onMouseOut={() => document.getElementById(`status-${task.name}`).innerText = 'Status'}>
-        Status
-        </button>
-           <button id={`due-${task.name}`} className="task-box__due-btn"
-          onMouseOver={() => document.getElementById(`due-${task.name}`).innerText = task.data.due}
-          onMouseOut={() => document.getElementById(`due-${task.name}`).innerText = 'Due'}>
-        Due
-        </button>
-            <button className="task-box__edit-button"
+            <p className="tasks__task-description">{task.data.text}</p>
+          </div>
+          <span>{task.data.status}</span>
+          <span>{formatDate(task.data.due)}</span>
+          <div className="tasks__item-btn-group">
+            <button
+              className="icon-btn"
               type="button"
               key={task.name}
               onClick={() => handleEdit(task)}
             >
-              Edit
+              <FaEdit />
             </button>
-            <button className="task-box__delete-button" type="button" onClick={() => handleDelete(task)}>
-              Delete
+            <button
+              className="icon-btn"
+              type="button"
+              onClick={() => handleDelete(task)}
+            >
+              <FaTrashAlt />
             </button>
-         </span>
-        </div>
+          </div>
         </li>
       ))}
     </ul>
@@ -327,14 +335,13 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
 
   return (
     <div className="form__container">
-      
       <form
         className="form"
         id="add-task"
         onSubmit={(e) => handleSubmitTask(e)}
       >
         <h2 className="form__title">New Task</h2>
-        
+
         <label htmlFor="name">Task</label>
         <input
           type="text"
@@ -370,7 +377,9 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "to-do"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="to-do">To-do</label>
+            <label className="form__radio-label" htmlFor="to-do">
+              To-do
+            </label>
           </div>
           <div>
             <input
@@ -381,7 +390,9 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "in-progress"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="in-progress">In Progress</label>
+            <label className="form__radio-label" htmlFor="in-progress">
+              In Progress
+            </label>
           </div>
           <div>
             <input
@@ -392,19 +403,23 @@ function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
               checked={newTask.status === "complete"}
               onChange={(e) => handleChange(e)}
             ></input>
-            <label htmlFor="complete">Complete</label>
+            <label className="form__radio-label" htmlFor="complete">
+              Complete
+            </label>
           </div>
         </div>
-        <button className="form__close-btn" type="submit" form="add-task">
-          Add
-        </button>
-        <button
-        className="form__close-btn"
-        type="button"
-        onClick={() => setToggleAddTask(false)}
-      >
-        Close
-      </button>
+        <div className="form__btn-group">
+          <button className="form__add-btn" type="submit" form="add-task">
+            Add
+          </button>
+          <button
+            className="form__close-btn"
+            type="button"
+            onClick={() => setToggleAddTask(false)}
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
@@ -449,7 +464,6 @@ function EditTaskForm({ user, editTask, setEditTask }) {
 
   return (
     <div className="form__container">
-     
       <form
         className="form"
         id="edit-task"
@@ -516,12 +530,18 @@ function EditTaskForm({ user, editTask, setEditTask }) {
             <label htmlFor="complete">Complete</label>
           </div>
         </div>
-        <button className="form__close-btn" type="button" onClick={() => setEditTask(null)}>
-        Cancel
-      </button>
-        <button className="form__close-btn" type="submit" form="edit-task">
-          Save Edit
-        </button>
+        <div className="form__btn-group">
+          <button className="form__add-btn" type="submit" form="add-task">
+            Edit
+          </button>
+          <button
+            className="form__close-btn"
+            type="button"
+            onClick={() => setEditTask(null)}
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
