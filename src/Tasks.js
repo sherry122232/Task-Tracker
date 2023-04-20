@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useStateValue } from "./StateProvider";
-import { auth, db } from "./firebase-setup/firebase";
+import { auth, db, deleteDoc } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 
 export default function Tasks() {
@@ -54,7 +54,7 @@ export default function Tasks() {
           setSearchPhrase={setSearchPhrase}
           setToggleAddTask={setToggleAddTask}
         />
-        <TasksItems filteredTasks={filteredTasks} setEditTask={setEditTask} />
+        <TasksItems user={user} filteredTasks={filteredTasks} setEditTask={setEditTask} />
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
@@ -211,9 +211,9 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   };
   // delete task from db
   const remove = (task) => {
-    console.log(task);
+    console.log(user.uid);
     db.collection("users")
-      .doc(user?.uid)
+      .doc(user.uid)
       .collection("tasks")
       .doc(task.name)
       .delete();
