@@ -1,50 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600&display=swap");
+
+/* VARIABLES */
+:root {
+  --main: #004e98;
+  --main-accent: #3a6ea5;
+  /* --light: #ebebeb; */
+  --light: white;
+  --light-accent: #c0c0c0;
+  --accent: #ff6700;
+}
+
 .main {
   height: 100dvh;
   max-width: 100vh;
   margin: auto;
-  background-color: aqua;
+  /* background-color: var(--light); */
+  font-family: "Montserrat";
+}
+
+/* UTILITY */
+.offscreen {
+  position: absolute;
+  top: -10000px;
 }
 
 /* HEADER */
 .header {
-  background-color: blue;
-  padding: 1rem;
+  background-color: var(--main);
+  color: var(--light);
+  padding: 2em;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  height: 10vh;
-}
-
-.header__title {
-  flex-grow: 1;
+  height: 15vh;
+  border-radius: 0 0 20px 20px;
 }
 
 /* TASKS */
 .tasks {
   background-color: white;
-  margin: 1rem;
-  padding: 2rem;
+  padding: 1em 2em;
 }
 
-.tasks__list-item {
+/* .tasks__list-item {
+  padding: 1rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: white;
+} */
+
+.tasks__list-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 1rem;
+}
+
+.tasks__sort-group {
   display: flex;
   gap: 1rem;
-}
-
-.tasks__task-name {
-  flex-grow: 1;
 }
 
 .tasks__list-item {
   margin-left: auto;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   position: relative;
+}
+
+.tasks__item-main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 1em;
+  padding: 1em;
+}
+
+.tasks__item-name {
+  flex-grow: 1;
+}
+
+.tasks__item-btn-group {
+  display: flex;
+  gap: 1em;
 }
 
 .form__container {
@@ -86,61 +131,6 @@
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
-.task-box__task-btn {
-  position: absolute;
-  right: 240px;
-}
-
-.task-box__status-btn {
-  position: absolute;
-  right: 170px;
-}
-
-.task-box__due-btn {
-  position: absolute;
-  right: 120px;
-}
-
-.task-box__edit-button {
-  position: absolute;
-  right: 70px;
-}
-
-.task-box__delete-button {
-  position: absolute;
-  right: 5px;
-}
-
-
-
-
-.tasks__new-btn {
-  display: block;
-  margin: 0 auto;
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  border-radius: 0;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: #00bfff;
-  color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  outline: none;
-  transform: translateY(-50%);
-}
-
-
-
-.addbutton:hover {
-  cursor: pointer;
-}
-
-
-
 /* Login */
 .login-container {
   max-width: 400px; /* Increased max-width to 400px */
@@ -153,9 +143,7 @@
   align-items: center;
   justify-content: center;
   height: 50vh;
-  
-  
-  
+
   position: absolute;
   top: 50%;
   left: 50%;
@@ -202,7 +190,6 @@
   cursor: pointer;
 }
 
-
 /* Register */
 .register-container {
   max-width: 500px;
@@ -237,7 +224,6 @@
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
-  
 }
 
 .register-button {
