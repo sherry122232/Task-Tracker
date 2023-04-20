@@ -54,7 +54,7 @@ export default function Tasks() {
           setSearchPhrase={setSearchPhrase}
           setToggleAddTask={setToggleAddTask}
         />
-        <TasksItems filteredTasks={filteredTasks} setEditTask={setEditTask} />
+        <TasksItems filteredTasks={filteredTasks} setEditTask={setEditTask} setFilteredTasks={setFilteredTasks}/>
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
@@ -106,62 +106,40 @@ function TasksHeader({
   searchPhrase,
   setSearchPhrase,
   setToggleAddTask,
+
 }) {
+
+  // sorts tasks by name into filteredTasks
   
-    // sorts tasks by name into filteredTasks
-  const sortName = () => {
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.name.toLowerCase();
-        const bLower = b.data.name.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
+    const sortTasks = (prop) => {
+      setFilteredTasks((tasks) => {
+        let newTasks = [...tasks];
+        newTasks.sort((a, b) => {
+          const aLower = a.data[prop].toLowerCase();
+          const bLower = b.data[prop].toLowerCase();
+          if (aLower < bLower) {
+            return -1;
+          } else if (aLower > bLower) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        return newTasks;
       });
-      return newTasks;
-    });
-  };
-  // sorts tasks by status into filteredTasks
-  const sortStatus = () => {
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.status.toLowerCase();
-        const bLower = b.data.status.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-  // sorts tasks by due date into filteredTasks
-  const sortDue = () => {
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.due.toLowerCase();
-        const bLower = b.data.due.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
+    };
+    const sortName = () => {
+      sortTasks('name');
+    };
+    
+    const sortStatus = () => {
+      sortTasks('status');
+    };
+    
+    const sortDue = () => {
+      sortTasks('due');
+    };
+    
 
   return (
     <div className="tasks__list-header">
@@ -203,7 +181,7 @@ function TasksHeader({
 
 
 // task items content
-function TasksItems({ user, filteredTasks, setEditTask }) {
+function TasksItems({ user, filteredTasks, setEditTask,setFilteredTasks }) {
   // handle edit task
   const handleEdit = (taskName) => {
     console.log({ taskName });
@@ -224,6 +202,9 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   const handleDelete = (task) => {
     console.log(`Delete task: ${task.name}`);
     remove(task);
+    const updatedTasks = filteredTasks.filter((t) => t.name !== task.name);
+    setFilteredTasks(updatedTasks);
+    // console.log(filteredTasks);
   };
   // reformats date from form
   const formatDate = (date) => {
