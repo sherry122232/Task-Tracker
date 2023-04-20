@@ -62,6 +62,9 @@ function Login() {
         </button>
         <br />
         <button type="submit" className="login-button" style={{marginBottom: "4%"}}>Login</button>
+        <div className="password-toggle">
+          Don't have an account? <Link to='/register'><button type="button">Register</button></Link>
+        </div>
       </form>
     </div>
   );
