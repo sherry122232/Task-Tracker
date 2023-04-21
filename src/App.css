@@ -109,6 +109,14 @@
   background-color: var(--light-accent);
 }
 
+.tasks__sort-btn-selected {
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: var(--main);
+  color: var(--light);
+}
+
 .tasks__new-btn-wrapper {
   text-align: right;
 }

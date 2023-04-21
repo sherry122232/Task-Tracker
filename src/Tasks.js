@@ -114,8 +114,11 @@ function TasksHeader({
   setSearchPhrase,
   setToggleAddTask,
 }) {
+  // init state to monitor sort option
+  const [sort, setSort] = useState("due");
   // sorts tasks by name into filteredTasks
   const sortName = () => {
+    setSort("name");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
@@ -134,6 +137,7 @@ function TasksHeader({
   };
   // sorts tasks by status into filteredTasks
   const sortStatus = () => {
+    setSort("status");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
@@ -152,6 +156,7 @@ function TasksHeader({
   };
   // sorts tasks by due date into filteredTasks
   const sortDue = () => {
+    setSort("due");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
@@ -187,21 +192,27 @@ function TasksHeader({
       </div>
       <div className="tasks__sort-group">
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "name" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortName()}
         >
           Name
         </button>
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "status" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortStatus()}
         >
           Status
         </button>
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "due" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortDue()}
         >
