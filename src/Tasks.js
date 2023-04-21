@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useStateValue } from "./StateProvider";
-import { auth, db, deleteDoc } from "./firebase-setup/firebase";
+import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
-
 // import icons
 import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
+import { TasksHeader } from "./SortingTasks";
 
 export default function Tasks() {
   //for user auth purposes
@@ -64,6 +64,7 @@ export default function Tasks() {
           user={user}
           filteredTasks={filteredTasks}
           setEditTask={setEditTask}
+          setFilteredTasks={setFilteredTasks}
         />
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
@@ -103,132 +104,9 @@ function TasksLayout({ children }) {
 }
 
 // tasks section header with search, sort, and add task ui
-function TasksHeader({
-  setFilteredTasks,
-  searchPhrase,
-  setSearchPhrase,
-  setToggleAddTask,
-}) {
-  // init state to monitor sort option
-  const [sort, setSort] = useState("due");
-  // sorts tasks by name into filteredTasks
-  const sortName = () => {
-    setSort("name");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.name.toLowerCase();
-        const bLower = b.data.name.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-  // sorts tasks by status into filteredTasks
-  const sortStatus = () => {
-    setSort("status");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.status.toLowerCase();
-        const bLower = b.data.status.toLowerCase();
-        if (aLower > bLower) {
-          return -1;
-        } else if (aLower < bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-  // sorts tasks by due date into filteredTasks
-  const sortDue = () => {
-    setSort("due");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.due.toLowerCase();
-        const bLower = b.data.due.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-
-  return (
-    <div className="tasks__list-header">
-      <div className="tasks__search-group">
-        <input
-          className="tasks__search"
-          type="text"
-          id="search"
-          name="search"
-          key="search"
-          onChange={(e) => setSearchPhrase(e.target.value)}
-          value={searchPhrase}
-        ></input>
-        <label className="" htmlFor="search">
-          <FaSearch />
-        </label>
-      </div>
-      <div className="tasks__sort-group">
-        <button
-          className={
-            sort === "name" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortName()}
-        >
-          Name
-        </button>
-        <button
-          className={
-            sort === "status" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortStatus()}
-        >
-          Status
-        </button>
-        <button
-          className={
-            sort === "due" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortDue()}
-        >
-          Due
-        </button>
-      </div>
-      <div className="tasks__new-btn-wrapper">
-        <button
-          className="icon-btn tasks__new-btn"
-          type="button"
-          onClick={() => setToggleAddTask(true)}
-        >
-          <FaPlus size={40} />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // task items content
-function TasksItems({ user, filteredTasks, setEditTask }) {
+function TasksItems({ user, filteredTasks, setEditTask, setFilteredTasks }) {
   // handle edit task
   const handleEdit = (taskName) => {
     console.log({ taskName });
@@ -236,9 +114,9 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   };
   // delete task from db
   const remove = (task) => {
-    console.log(user.uid);
+    console.log(task);
     db.collection("users")
-      .doc(user.uid)
+      .doc(user?.uid)
       .collection("tasks")
       .doc(task.name)
       .delete();
@@ -248,11 +126,15 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   // handle delete task from db
   const handleDelete = (task) => {
     remove(task);
+    const updatedTasks = filteredTasks.filter((t) => t.name !== task.name);
+    setFilteredTasks(updatedTasks);
+    // console.log(filteredTasks);
   };
   // reformats date from data
   const formatDate = (date) => {
+    console.log(date);
     const dateParsed = date.split("-");
-    return `${dateParsed[1]}/${dateParsed[2]}`;
+    return `${dateParsed[1]}/${dateParsed[2]}/${dateParsed[0]}`;
   };
 
   // Changes color based on status
