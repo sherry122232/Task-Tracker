@@ -3,12 +3,12 @@ import { useStateValue } from "./StateProvider";
 import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 // import icons
-import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import {TasksHeader} from "./SortingTasks";
 
 export default function Tasks() {
   //for user auth purposes
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }] = useStateValue();
   const [name, setName] = useState("No User");
   const [tasks, setTasks] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState("");

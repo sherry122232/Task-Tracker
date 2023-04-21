@@ -12,7 +12,7 @@ import Tasks from "./Tasks";
 import PathError from "./PathError";
 
 function App() {
-  const [{}, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
 
   useEffect(() => {
     //will only run once when the app component loads...
@@ -34,7 +34,7 @@ function App() {
         });
       }
     });
-  }, []);
+  }, );
 
   return (
     <Routes>
