@@ -136,8 +136,8 @@
   align-items: center;
   gap: 2rem;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 10px 20px;
   margin-bottom: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   position: relative;
