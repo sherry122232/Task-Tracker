@@ -245,7 +245,8 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   };
   // reformats date from data
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
+    const dateParsed = date.split("-");
+    return `${dateParsed[1]}/${dateParsed[2]}`;
   };
   return (
     <ul className="tasks__list">
@@ -424,10 +425,6 @@ function EditTaskForm({ user, editTask, setEditTask }) {
       ...updatedTask,
       data: { ...updatedTask.data, [name]: value },
     });
-  };
-  // reformats date from form
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
   };
   // update task data on db
   const edit = (task) => {
