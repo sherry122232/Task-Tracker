@@ -1,7 +1,7 @@
 {
   "name": "task-tracker",
   "version": "0.1.0",
-  "homepage": "https://ZepStump.github.io/",
+  "homepage": "https://ZepStump.github.io/Task-Tracker",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
