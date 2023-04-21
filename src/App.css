@@ -28,7 +28,7 @@
   border-radius: 100%;
   padding: 15px;
   border: none;
-  background-color: var(--light);
+  background-color: white;
 }
 
 .icon-btn:hover {
@@ -64,15 +64,6 @@
 .tasks {
   padding: 1em 2em;
 }
-
-/* .tasks__list-item {
-  padding: 1rem;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background-color: white;
-} */
 
 .tasks__list-header {
   padding: 1em;
@@ -123,6 +114,7 @@
 .tasks__new-btn {
   background-color: var(--main);
   color: white;
+  padding: 10px;
 }
 
 .tasks__new-btn:hover {
@@ -136,8 +128,8 @@
   align-items: center;
   gap: 2rem;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 10px 20px;
   margin-bottom: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -149,11 +141,10 @@
   flex-direction: column;
   flex-grow: 1;
   gap: 1em;
-  padding: 1em;
 }
 
-.tasks__item-name {
-  flex-grow: 1;
+.tasks__task-name {
+  font-size: 2rem;
 }
 
 .tasks__item-btn-group {
@@ -216,7 +207,6 @@
 }
 
 .form label {
-  /* display: block; */
   margin-bottom: 5px;
 }
 

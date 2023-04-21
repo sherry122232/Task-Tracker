@@ -68,12 +68,7 @@ export default function Tasks() {
       </TasksLayout>
       {/* logic allows add task form to be opened and closed */}
       {toggleAddTask && (
-        <AddTaskForm
-          user={user}
-          tasks={tasks}
-          setTasks={setTasks}
-          setToggleAddTask={setToggleAddTask}
-        />
+        <AddTaskForm user={user} setToggleAddTask={setToggleAddTask} />
       )}
       {editTask && (
         <EditTaskForm
@@ -225,7 +220,7 @@ function TasksHeader({
           type="button"
           onClick={() => setToggleAddTask(true)}
         >
-          <FaPlus />
+          <FaPlus size={40} />
         </button>
       </div>
     </div>
@@ -263,12 +258,12 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
   // Changes color based on status
   const determineBackgroundColor = (status) => {
     if (status === "in-progress") {
-      return "#fff099";
+      return "#fffc99";
     }
     if (status === "to-do") {
-      return "#c2dbf7";
+      return "#9ac6ef";
     }
-    return "#9df0c0";
+    return "#aae39e";
   };
 
   return (
@@ -294,14 +289,14 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
               key={task.name}
               onClick={() => handleEdit(task)}
             >
-              <FaEdit />
+              <FaEdit size={25} />
             </button>
             <button
               className="icon-btn"
               type="button"
               onClick={() => handleDelete(task)}
             >
-              <FaTrashAlt />
+              <FaTrashAlt size={25} />
             </button>
           </div>
         </li>
@@ -311,7 +306,7 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
 }
 
 // pop out form to add new task
-function AddTaskForm({ user, tasks, setTasks, setToggleAddTask }) {
+function AddTaskForm({ user, setToggleAddTask }) {
   console.log(`User.uid ${user.uid}`);
   // init new task state
   const [newTask, setNewTask] = useState({
