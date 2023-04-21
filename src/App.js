@@ -8,7 +8,7 @@ import { useStateValue } from "./StateProvider";
 import Home from "./Home";
 import Register from "./Register";
 import Login from "./Login";
-import Tasks from "./tasks/Tasks";
+import Tasks from "./Tasks";
 import PathError from "./PathError";
 
 function App() {
