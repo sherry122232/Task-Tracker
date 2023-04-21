@@ -4,6 +4,7 @@ import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 // import icons
 import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
+import {TasksHeader} from "./SortingTasks";
 
 export default function Tasks() {
   //for user auth purposes
@@ -14,6 +15,7 @@ export default function Tasks() {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [toggleAddTask, setToggleAddTask] = useState(false);
   const [editTask, setEditTask] = useState(null);
+  
   // init filtered task for search functionality
   useEffect(() => {
     const results = tasks.filter((task) =>
@@ -102,128 +104,7 @@ function TasksLayout({ children }) {
 }
 
 // tasks section header with search, sort, and add task ui
-function TasksHeader({
-  setFilteredTasks,
-  searchPhrase,
-  setSearchPhrase,
-  setToggleAddTask,
 
-}) {
-  // sorts tasks by name into filteredTasks
-  const sortName = () => {
-    setSort("name");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.name.toLowerCase();
-        const bLower = b.data.name.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-  // sorts tasks by status into filteredTasks
-  const sortStatus = () => {
-    setSort("status");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.status.toLowerCase();
-        const bLower = b.data.status.toLowerCase();
-        if (aLower > bLower) {
-          return -1;
-        } else if (aLower < bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-  // sorts tasks by due date into filteredTasks
-  const sortDue = () => {
-    setSort("due");
-    setFilteredTasks((tasks) => {
-      let newTasks = [...tasks];
-      newTasks.sort((a, b) => {
-        const aLower = a.data.due.toLowerCase();
-        const bLower = b.data.due.toLowerCase();
-        if (aLower < bLower) {
-          return -1;
-        } else if (aLower > bLower) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      return newTasks;
-    });
-  };
-
-  return (
-    <div className="tasks__list-header">
-      <div className="tasks__search-group">
-        <input
-          className="tasks__search"
-          type="text"
-          id="search"
-          name="search"
-          key="search"
-          onChange={(e) => setSearchPhrase(e.target.value)}
-          value={searchPhrase}
-        ></input>
-        <label className="" htmlFor="search">
-          <FaSearch />
-        </label>
-      </div>
-      <div className="tasks__sort-group">
-        <button
-          className={
-            sort === "name" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortName()}
-        >
-          Name
-        </button>
-        <button
-          className={
-            sort === "status" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortStatus()}
-        >
-          Status
-        </button>
-        <button
-          className={
-            sort === "due" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
-          }
-          type="button"
-          onClick={() => sortDue()}
-        >
-          Due
-        </button>
-      </div>
-      <div className="tasks__new-btn-wrapper">
-        <button
-          className="icon-btn tasks__new-btn"
-          type="button"
-          onClick={() => setToggleAddTask(true)}
-        >
-          <FaPlus />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 
 // task items content
@@ -253,8 +134,9 @@ function TasksItems({ user, filteredTasks, setEditTask,setFilteredTasks }) {
   };
   // reformats date from data
   const formatDate = (date) => {
+    console.log(date);
     const dateParsed = date.split("-");
-    return `${dateParsed[1]}/${dateParsed[2]}`;
+    return `${dateParsed[1]}/${dateParsed[2]}/${dateParsed[0]}`;
   };
 
   // Changes color based on status
