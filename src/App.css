@@ -9,6 +9,12 @@
   --accent: #ff6700;
 }
 
+.beofre {
+  --green: #aae39e;
+  --yellow: #fffc99;
+  --blue: #9ac6ef;
+}
+
 .main {
   height: 100dvh;
   max-width: 100vh;
@@ -28,7 +34,7 @@
   border-radius: 100%;
   padding: 15px;
   border: none;
-  background-color: var(--light);
+  background-color: white;
 }
 
 .icon-btn:hover {
@@ -64,15 +70,6 @@
 .tasks {
   padding: 1em 2em;
 }
-
-/* .tasks__list-item {
-  padding: 1rem;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background-color: white;
-} */
 
 .tasks__list-header {
   padding: 1em;
@@ -123,6 +120,7 @@
 .tasks__new-btn {
   background-color: var(--main);
   color: white;
+  padding: 10px;
 }
 
 .tasks__new-btn:hover {
@@ -153,7 +151,11 @@
 }
 
 .tasks__item-name {
-  flex-grow: 1;
+  font-size: 2rem;
+}
+
+.tasks__item-info {
+  font-size: 1.5rem;
 }
 
 .tasks__item-btn-group {

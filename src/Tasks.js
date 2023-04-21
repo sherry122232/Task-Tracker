@@ -225,7 +225,7 @@ function TasksHeader({
           type="button"
           onClick={() => setToggleAddTask(true)}
         >
-          <FaPlus />
+          <FaPlus size={50} />
         </button>
       </div>
     </div>
@@ -267,12 +267,12 @@ function TasksItems({ user, filteredTasks, setEditTask, setFilteredTasks }) {
   // Changes color based on status
   const determineBackgroundColor = (status) => {
     if (status === "in-progress") {
-      return "#fff099";
+      return "#fffc99";
     }
     if (status === "to-do") {
-      return "#c2dbf7";
+      return "#9ac6ef";
     }
-    return "#9df0c0";
+    return "#aae39e";
   };
 
   return (
@@ -286,11 +286,11 @@ function TasksItems({ user, filteredTasks, setEditTask, setFilteredTasks }) {
           }}
         >
           <div className="tasks__item-main">
-            <span className="tasks__task-name">{task.data.name}</span>
+            <span className="tasks__item-name">{task.data.name}</span>
             <p className="tasks__task-description">{task.data.text}</p>
           </div>
-          <span>{task.data.status}</span>
-          <span>{formatDate(task.data.due)}</span>
+          <span className="tasks__item-info">{task.data.status}</span>
+          <span className="tasks__item-info">{formatDate(task.data.due)}</span>
           <div className="tasks__item-btn-group">
             <button
               className="icon-btn"
@@ -298,14 +298,14 @@ function TasksItems({ user, filteredTasks, setEditTask, setFilteredTasks }) {
               key={task.name}
               onClick={() => handleEdit(task)}
             >
-              <FaEdit />
+              <FaEdit size={25} />
             </button>
             <button
               className="icon-btn"
               type="button"
               onClick={() => handleDelete(task)}
             >
-              <FaTrashAlt />
+              <FaTrashAlt size={25} />
             </button>
           </div>
         </li>
