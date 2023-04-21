@@ -248,10 +248,23 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
     const dateParsed = date.split("-");
     return `${dateParsed[1]}/${dateParsed[2]}`;
   };
+
+  // Changes color based on status
+  const determineBackgroundColor = (status) => {
+    if (status === "in-progress") {
+      return "#fff099";
+    }
+    if (status === "to-do") {
+      return "#c2dbf7";
+    }
+    return "#9df0c0";
+  }
+
   return (
     <ul className="tasks__list">
       {filteredTasks.map((task) => (
-        <li className="tasks__list-item" key={task.name}>
+        <li className="tasks__list-item" key={task.name} 
+        style={{backgroundColor: determineBackgroundColor(task.data.status)}}>
           <div className="tasks__item-main">
             <span className="tasks__task-name">{task.data.name}</span>
             <p className="tasks__task-description">{task.data.text}</p>
