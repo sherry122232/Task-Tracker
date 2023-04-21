@@ -109,9 +109,9 @@ function TasksHeader({
   setToggleAddTask,
 
 }) {
-  
-    // sorts tasks by name into filteredTasks
+  // sorts tasks by name into filteredTasks
   const sortName = () => {
+    setSort("name");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
@@ -130,14 +130,15 @@ function TasksHeader({
   };
   // sorts tasks by status into filteredTasks
   const sortStatus = () => {
+    setSort("status");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
         const aLower = a.data.status.toLowerCase();
         const bLower = b.data.status.toLowerCase();
-        if (aLower < bLower) {
+        if (aLower > bLower) {
           return -1;
-        } else if (aLower > bLower) {
+        } else if (aLower < bLower) {
           return 1;
         } else {
           return 0;
@@ -148,6 +149,7 @@ function TasksHeader({
   };
   // sorts tasks by due date into filteredTasks
   const sortDue = () => {
+    setSort("due");
     setFilteredTasks((tasks) => {
       let newTasks = [...tasks];
       newTasks.sort((a, b) => {
@@ -183,21 +185,27 @@ function TasksHeader({
       </div>
       <div className="tasks__sort-group">
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "name" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortName()}
         >
           Name
         </button>
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "status" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortStatus()}
         >
           Status
         </button>
         <button
-          className="tasks__sort-btn"
+          className={
+            sort === "due" ? "tasks__sort-btn-selected" : "tasks__sort-btn"
+          }
           type="button"
           onClick={() => sortDue()}
         >
@@ -245,12 +253,31 @@ function TasksItems({ user, filteredTasks, setEditTask,setFilteredTasks }) {
   };
   // reformats date from data
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
+    const dateParsed = date.split("-");
+    return `${dateParsed[1]}/${dateParsed[2]}`;
   };
+
+  // Changes color based on status
+  const determineBackgroundColor = (status) => {
+    if (status === "in-progress") {
+      return "#fff099";
+    }
+    if (status === "to-do") {
+      return "#c2dbf7";
+    }
+    return "#9df0c0";
+  };
+
   return (
     <ul className="tasks__list">
       {filteredTasks.map((task) => (
-        <li className="tasks__list-item" key={task.name}>
+        <li
+          className="tasks__list-item"
+          key={task.name}
+          style={{
+            backgroundColor: determineBackgroundColor(task.data.status),
+          }}
+        >
           <div className="tasks__item-main">
             <span className="tasks__task-name">{task.data.name}</span>
             <p className="tasks__task-description">{task.data.text}</p>
@@ -425,10 +452,6 @@ function EditTaskForm({ user, editTask, setEditTask }) {
       data: { ...updatedTask.data, [name]: value },
     });
   };
-  // reformats date from form
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
-  };
   // update task data on db
   const edit = (task) => {
     db.collection("users")
@@ -437,7 +460,7 @@ function EditTaskForm({ user, editTask, setEditTask }) {
       .doc(task.name)
       .update({
         name: task.data.name,
-        due: formatDate(task.data.due),
+        due: task.data.due,
         text: task.data.text,
         status: task.data.status,
       });
@@ -521,8 +544,8 @@ function EditTaskForm({ user, editTask, setEditTask }) {
           </div>
         </div>
         <div className="form__btn-group">
-          <button className="form__add-btn" type="submit" form="add-task">
-            Edit
+          <button className="form__add-btn" type="submit" form="edit-task">
+            Save
           </button>
           <button
             className="form__close-btn"

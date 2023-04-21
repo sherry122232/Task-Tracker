@@ -91,6 +91,9 @@ function Register() {
         <button type="submit" className="register-button" style={{marginBottom: "4%"}}>
           Register
         </button>
+        <div className="password-toggle">
+          Already have an account? <Link to='/login'><button type="button">Login</button></Link>
+        </div>
       </form>
     </div>
   );
