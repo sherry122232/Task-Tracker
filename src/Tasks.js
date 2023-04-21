@@ -139,9 +139,9 @@ function TasksHeader({
       newTasks.sort((a, b) => {
         const aLower = a.data.status.toLowerCase();
         const bLower = b.data.status.toLowerCase();
-        if (aLower < bLower) {
+        if (aLower > bLower) {
           return -1;
-        } else if (aLower > bLower) {
+        } else if (aLower < bLower) {
           return 1;
         } else {
           return 0;
@@ -258,13 +258,18 @@ function TasksItems({ user, filteredTasks, setEditTask }) {
       return "#c2dbf7";
     }
     return "#9df0c0";
-  }
+  };
 
   return (
     <ul className="tasks__list">
       {filteredTasks.map((task) => (
-        <li className="tasks__list-item" key={task.name} 
-        style={{backgroundColor: determineBackgroundColor(task.data.status)}}>
+        <li
+          className="tasks__list-item"
+          key={task.name}
+          style={{
+            backgroundColor: determineBackgroundColor(task.data.status),
+          }}
+        >
           <div className="tasks__item-main">
             <span className="tasks__task-name">{task.data.name}</span>
             <p className="tasks__task-description">{task.data.text}</p>
