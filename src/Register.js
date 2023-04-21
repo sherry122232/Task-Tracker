@@ -1,62 +1,57 @@
 import React, { useState } from "react";
-import { auth, db } from './firebase-setup/firebase';
-import { useNavigate } from 'react-router-dom';
+import { auth, db } from "./firebase-setup/firebase";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import './App.css';
+import "./App.css";
 
 function Register() {
-
   //to move to tasks after registration
   const history = useNavigate();
   //have to collect email
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   //have to collect password
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   //Let's ask for name as well
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   //for hiding password purposes
   const [passwordShown, setPasswordShown] = useState(false);
 
   const togglePasswordVisiblity = () => {
-      setPasswordShown(passwordShown ? false : true);
+    setPasswordShown(passwordShown ? false : true);
   };
 
   //register button
-  const register = e => {
+  const register = (e) => {
     e.preventDefault();
 
-    auth 
-        .createUserWithEmailAndPassword(email, password)
-        .then((auth) => {
-            if (auth) {
-                history('/tasks');
-            }
-        })
-        .catch(error => alert(error.message))
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((auth) => {
+        if (auth) {
+          history("/tasks");
+        }
+      })
+      .catch((error) => alert(error.message));
 
-    auth.onAuthStateChanged(user => {
-        db
-        .collection('users')
+    auth.onAuthStateChanged((user) => {
+      db.collection("users")
         .doc(user.uid)
-        .collection('tasks')
+        .collection("tasks")
         .doc("DummyTask")
         .set({
           name: "Dummy",
           due: "01/01/2024",
           text: "This is dummy task",
-          status: "Not started"
-        })
+          status: "Not started",
+        });
 
-        db
-        .collection('user_names')
-        .doc(user.uid)
-        .set({
-          name: name
-        })
-    })
+      db.collection("user_names").doc(user.uid).set({
+        name: name,
+      });
+    });
 
-    alert("You have registered")
-  }
+    alert("You have registered");
+  };
   return (
     <div className="register-container">
       <h2 className="register-title">Register for Task Tracker</h2>
@@ -79,24 +74,35 @@ function Register() {
         <br />
         <label htmlFor="password">Password:</label>
         <input
-          type={passwordShown ? 'text' : 'password'}
+          type={passwordShown ? "text" : "password"}
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <br />
-        <button type="button" className="password-toggle"  onClick={togglePasswordVisiblity}>
-          {passwordShown ? 'Hide' : 'Show'}
+        <button
+          type="button"
+          className="password-toggle"
+          onClick={togglePasswordVisiblity}
+        >
+          {passwordShown ? "Hide" : "Show"}
         </button>
-        <button type="submit" className="register-button" style={{marginBottom: "4%"}}>
+        <button
+          type="submit"
+          className="register-button"
+          style={{ marginBottom: "4%" }}
+        >
           Register
         </button>
         <div className="password-toggle">
-          Already have an account? <Link to='/login'><button type="button">Login</button></Link>
+          Already have an account?{" "}
+          <Link to="/login">
+            <button type="button">Login</button>
+          </Link>
         </div>
       </form>
     </div>
   );
-};
+}
 
 export default Register;
