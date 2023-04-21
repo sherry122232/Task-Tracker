@@ -4,7 +4,6 @@ import { auth, db } from "./firebase-setup/firebase";
 import { Link } from "react-router-dom";
 // import icons
 import { FaTrashAlt, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
-import { TasksHeader } from "./SortingTasks";
 
 export default function Tasks() {
   //for user auth purposes
